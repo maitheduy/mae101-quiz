@@ -7,7 +7,7 @@
 //  - strip stray backslashes used in LaTeX when they appear in plain text
 // Both raw and normalized forms are tested against each pattern.
 
-import { RubricItem, Question } from "./quiz-data";
+import { RubricItem, Question } from "./quiz-data-types";
 
 export function normalizeAnswer(raw: string): string {
   let s = raw.toLowerCase();

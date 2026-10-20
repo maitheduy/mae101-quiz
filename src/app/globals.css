@@ -120,3 +120,54 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* MAE101 quiz — dark theme + MathJax tweaks */
+html, body {
+  background: #0b0b0b !important;
+  color: #f2f2f2 !important;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Force MathJax SVG color to white in preview/feedback */
+.preview mjx-container svg,
+.feedback mjx-container svg,
+.question-card mjx-container svg,
+.editor-card mjx-container svg,
+.hint-box mjx-container svg,
+.final mjx-container svg {
+  color: #fff !important;
+  fill: #fff !important;
+}
+
+/* Inline data table inside problem statement */
+.problem table.data,
+.editor-card table.data {
+  width: min(700px, 100%);
+  border-collapse: collapse;
+  margin: 20px auto;
+  font-family: Georgia, serif;
+}
+.problem table.data th,
+.problem table.data td,
+.editor-card table.data th,
+.editor-card table.data td {
+  border: 1px solid #666;
+  padding: 10px;
+  text-align: center;
+}
+.problem .formula,
+.editor-card .formula {
+  text-align: center;
+  margin: 20px 0;
+  font-size: 22px;
+}
+
+/* Better mobile */
+@media (max-width: 650px) {
+  .page { padding: 22px 15px 60px !important; }
+  .question-card, .editor-card { padding: 18px !important; }
+}

@@ -42,6 +42,10 @@ const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
     "no-undef": "off",
     "no-unreachable": "off",
     "no-useless-escape": "off",
+
+    // React hooks: allow setState in effect (intentional for localStorage hydration & state syncing)
+    "react-hooks/set-state-in-effect": "off",
+    "react-hooks/immutability": "off",
   },
 }, {
   ignores: ["node_modules/**", ".next/**", "out/**", "build/**", "next-env.d.ts", "examples/**", "skills"]
