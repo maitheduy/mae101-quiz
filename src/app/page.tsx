@@ -76,6 +76,7 @@ export default function Home() {
   const [savedLoaded, setSavedLoaded] = useState(false);
 
   const cardRef = useRef<HTMLDivElement>(null);
+  const editorCardRef = useRef<HTMLDivElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<HTMLTextAreaElement>(null);
   const renderTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -130,14 +131,32 @@ export default function Home() {
     }, 200);
   }, [editorText]);
 
-  // Re-typeset question card on question change
+  // Re-typeset question card whenever question changes or hint toggles.
+  // Use rAF + small delay to ensure React has finished committing DOM changes
+  // before MathJax scans the new nodes.
   useEffect(() => {
-    typeset(cardRef.current);
-  }, [current, showHint]);
+    let cancelled = false;
+    const run = () => {
+      if (cancelled) return;
+      if (cardRef.current) typeset(cardRef.current);
+      if (editorCardRef.current) typeset(editorCardRef.current);
+    };
+    // Double rAF ensures React has fully committed the new question DOM
+    requestAnimationFrame(() => requestAnimationFrame(run));
+    return () => { cancelled = true; };
+  }, [current, showHint, isAnswered]);
 
-  // Re-typeset preview after submit (feedback has math)
+  // Re-typeset card after submit (feedback block appears with math)
   useEffect(() => {
-    if (isAnswered) typeset(cardRef.current);
+    if (!isAnswered) return;
+    let cancelled = false;
+    const run = () => {
+      if (cancelled) return;
+      if (cardRef.current) typeset(cardRef.current);
+      if (editorCardRef.current) typeset(editorCardRef.current);
+    };
+    requestAnimationFrame(() => requestAnimationFrame(run));
+    return () => { cancelled = true; };
   }, [isAnswered, total]);
 
   const goNext = useCallback(() => {
@@ -275,7 +294,7 @@ export default function Home() {
         <div style={S.problem} dangerouslySetInnerHTML={{ __html: currentQ.problem }} />
       </div>
 
-      <div style={S.editorCard}>
+      <div ref={editorCardRef} style={S.editorCard}>
         <div style={S.label}>
           <b>Lời giải Câu {current + 1} của bạn</b>
           <button style={S.hintBtn} onClick={() => setShowHint((s) => !s)}>
